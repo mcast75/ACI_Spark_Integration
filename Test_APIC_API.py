@@ -31,17 +31,13 @@ def get_cookie(ip, user, password):
 	auth_cookie = {}
 
 	response = requests.request("POST", url, data=json.dumps(payload))
-	
-	print "\naaaLogin RESPONSE:"
 
 	if response.status_code == requests.codes.ok:
 		data = json.loads(response.text)['imdata'][0]
 		token = str(data['aaaLogin']['attributes']['token'])
 		auth_cookie = {"APIC-cookie" : token}
 		login_time = int(str(data['aaaLogin']['attributes']['firstLoginTime']))
-		#print '\tStatus Code '+ str(response.status_code)
-		#print '\tAuthenticated'
-		print
+
 
 	else:
 		print "Authentication ERROR - "+str(response.status_code)
@@ -126,7 +122,6 @@ if __name__ == '__main__':
 		ws = websocket.WebSocket()
 		ws.connect("ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie'])
 		thread.start_new_thread(listen, (ws, ''))
-		thread.start_new_thread(test_background, (ip_addr, auth_cookie))
 
 		try:
 			choice = raw_input("Select 1 to perform GET request or 2 to perform POST request: ")	
