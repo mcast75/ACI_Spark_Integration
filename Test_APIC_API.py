@@ -4,11 +4,12 @@ __email__ = "micastel@cisco.com"
 __status__ = "Development"
 
 #import the necessary libraries to make NXAPI REST calls
-import requests, json, sys, socket, getpass, time, websocket, thread
+import requests, json, sys, socket, getpass, time, websocket, thread, ssl, tornado
+
 
 is_IP = False
 time_auth = 0
-AUTH_TIMEOUT = 15
+AUTH_TIMEOUT = 90
 auth_cookie = {}
 
 def cookie_good(time_auth, timeout):
@@ -47,7 +48,9 @@ def get_cookie(ip, user, password):
 	return login_time, auth_cookie
 
 def post(ip, user, cookie, payload):
-	url = "http://"+ip+"/api/node/mo/uni.json"
+	url = "http://"+ip+"/api/node/mo/.json"
+	print json.dumps(json.loads(payload))
+
 	try:
 		response = requests.request("POST", url, data=json.dumps(json.loads(payload)), cookies=cookie)
 		print
@@ -57,6 +60,7 @@ def post(ip, user, cookie, payload):
 		print
 		print
 	except:
+		response = requests.request("POST", url, data=json.dumps(json.loads(payload)), cookies=cookie)
 		print "ERROR - "+str(response.status_code)
 		print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
 		print
@@ -64,23 +68,26 @@ def post(ip, user, cookie, payload):
 
 def get(url, user, cookie):
 	try:
-		response = requests.request("GET", url, cookies=cookie)
+		response = requests.request("GET", url, cookies=cookie, verify=False)
 		print
 		print "GET RESPONSE:"
 		print json.dumps(json.loads(response.text), indent=2)
 	except:
+		response = requests.request("GET", url, cookies=cookie, verify=False)
 		print "ERROR - "+str(response.status_code)
 		print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
 		sys.exit(1)
 		print
 
 def sub(url, user, cookie):
-	try:
-		url = url+'?subscription=yes'
-		requests.request("GET", url, cookies=cookie)
-		print("\nSubscribed\n")
-	except: 
-		print 'prblem'
+	#try:
+	url = url+'?subscription=yes'
+	response = requests.request("GET", url, cookies=cookie, verify=False)
+	print json.dumps(json.loads(response.text), indent=2)
+	print 
+	print("\nSubscribed\n")
+	#except: 
+		#print 'prblem'
 
 def listen(websocket, blank_string):
 	while(1):
@@ -107,6 +114,9 @@ def read_file(filepath):
 		sys.exit(1)
 
 if __name__ == '__main__':
+
+	#Disable warnings???
+	requests.packages.urllib3.disable_warnings()
 	
 	print
 	ip_addr = "10.122.143.24"
@@ -114,15 +124,21 @@ if __name__ == '__main__':
 	password = "ins3965!"
 
 	print "IP Address: "+ip_addr+"\nUsername: "+username+"\nPassword: "+password+"\n\n"
+
+	time_auth, auth_cookie = get_cookie(ip_addr,username, password)	
 		
 	while(1):
 		#if the auth-cookie has expired we need to ask for a new one
 		if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
-		
-		ws = websocket.WebSocket()
-		ws.connect("ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie'])
-		thread.start_new_thread(listen, (ws, ''))
+		host = "http://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']
+		ws = websocket.WebSocket(sslopt={"cert_reqs": ssl.CERT_NONE})
 
+		ws.connect("wss://"+ip_addr+"/socket"+auth_cookie['APIC-cookie'])
+		#print ip_addr
+		#print auth_cookie["APIC-cookie"]
+		#print "ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']
+		thread.start_new_thread(listen, (ws, ''))
+		
 		try:
 			choice = raw_input("Select 1 to perform GET request or 2 to perform POST request: ")	
 			if choice == '1':
@@ -138,7 +154,7 @@ if __name__ == '__main__':
 				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
 				post(ip_addr,'admin', auth_cookie, payload)
 		
-		except:
+		except KeyboardInterrupt :
 			print '\nSession Closed\n'
 			sys.exit(0)
 		

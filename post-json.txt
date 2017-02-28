@@ -1,0 +1,19 @@
+{
+    "polUni": {
+        "attributes" : {},
+          "children":[{
+              "fvTenant" : {
+                  "attributes" : {
+                      "name" : "CSAP_TENANT1"
+                  },
+                  "children": [{
+                      "fvCtx": {
+                        "attributes": {
+                            "name": "myVRF"
+                        }
+                    }
+                  }]
+              }
+          }]
+    }
+}
