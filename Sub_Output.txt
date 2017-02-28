@@ -1,0 +1,67 @@
+Tue Feb 28 12:05:56 2017
+{
+  "imdata": [
+    {
+      "fvTenant": {
+        "attributes": {
+          "dn": "uni/tn-CSAP_TENANT1", 
+          "status": "deleted", 
+          "rn": "", 
+          "modTs": "2017-02-28T12:02:17.942-05:00", 
+          "childAction": ""
+        }
+      }
+    }
+  ], 
+  "subscriptionId": [
+    "72058126630912001"
+  ]
+}
+
+Tue Feb 28 12:05:56 2017
+{
+  "imdata": [
+    {
+      "fvTenant": {
+        "attributes": {
+          "dn": "uni/tn-CSAP_TENANT1", 
+          "status": "deleted", 
+          "rn": "", 
+          "modTs": "2017-02-28T12:02:17.942-05:00", 
+          "childAction": ""
+        }
+      }
+    }
+  ], 
+  "subscriptionId": [
+    "72058126630912001"
+  ]
+}
+
+Tue Feb 28 12:06:03 2017
+{
+  "imdata": [
+    {
+      "fvTenant": {
+        "attributes": {
+          "dn": "uni/tn-CSAP_TENANT1", 
+          "lcOwn": "local", 
+          "ownerKey": "", 
+          "name": "CSAP_TENANT1", 
+          "descr": "", 
+          "status": "created", 
+          "monPolDn": "uni/tn-common/monepg-default", 
+          "modTs": "2017-02-28T12:02:25.052-05:00", 
+          "ownerTag": "", 
+          "uid": "15374", 
+          "rn": "", 
+          "childAction": ""
+        }
+      }
+    }
+  ], 
+  "subscriptionId": [
+    "72058126630912001"
+  ]
+}
+
