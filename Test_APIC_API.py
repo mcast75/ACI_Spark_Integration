@@ -17,7 +17,7 @@ def cookie_good(time_auth, timeout):
 
 	#if the auth-cookie has expired we need to ask for a new one
 	if time.time() - time_auth >= timeout:
-		print "***BAD COOKIE***"
+		#print "***BAD COOKIE***"
 		return False
 	else: return True 
 
@@ -76,19 +76,21 @@ def post(ip, user, cookie, payload):
 		sys.exit(1)
 
 def get(url, user, cookie):
-	try:
-		response = requests.request("GET", url, cookies=cookie, verify=False)
-		print '\tStatus Code: '+ str(response.status_code)
-		print '\tSuccess\n'
-		f = open('Get_Output.txt','a')
-		f.write(time.ctime(time.time())+'\n'+json.dumps(json.loads(response.text), indent=2)+'\n\n')
-		f.close()
-	except:
-		response = requests.request("GET", url, cookies=cookie, verify=False)
-		print "ERROR - "+str(response.status_code)
-		print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
-		sys.exit(1)
-		print
+	#try:
+	response = requests.request("GET", url, cookies=cookie, verify=False)
+	print '\tStatus Code: '+ str(response.status_code)
+	print '\tSuccess\n'
+	#f = open('Get_Output.txt','a') - save fort later
+
+	f = open('Get_Output.txt','w') #clean everything up each time
+	f.write(time.ctime(time.time())+'\n'+json.dumps(json.loads(response.text), indent=2)+'\n\n')
+	f.close()
+	# except:
+	# 	response = requests.request("GET", url, cookies=cookie, verify=False)
+	# 	print "ERROR - "+str(response.status_code)
+	# 	print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
+	# 	sys.exit(1)
+	# 	print
 
 def sub(url, user, cookie):
 	try:
@@ -115,8 +117,10 @@ def read_file(filepath):
 	try:
 		#open the file to be read iteratively and sent to remote device
 		file = open(filepath, 'r')
-		for line in file.readlines():
-			json_string+=str(line)
+		json_string=file.readline().replace("\n", "")
+		print json_string
+		#for line in file.readlines():
+		#	json_string+=str(line)
 		file.close
 		return json_string
 		#To avoid configuration file related errors, close the file.
@@ -142,9 +146,9 @@ if __name__ == '__main__':
 	#print "****COOKIE 1*****"
 	time_auth, auth_cookie = get_cookie(ip_addr,username, password)	
 
-	ws = websocket.WebSocket(sslopt={"cert_reqs": ssl.CERT_NONE})
+	ws = websocket.WebSocket()#sslopt={"cert_reqs": ssl.CERT_NONE})
 
-	ws.connect("wss://"+ip_addr+"/socket"+auth_cookie['APIC-cookie'])
+	ws.connect("ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie'])
 		#print ip_addr
 		#print auth_cookie["APIC-cookie"]
 		#print "ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']

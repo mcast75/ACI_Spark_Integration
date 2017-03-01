@@ -1,1 +1,15 @@
+https://10.122.143.24/api/class/fabricNode.json?query-target-filter=or(eq(fabricNode.role, "spine"),eq(fabricNode.role, "leaf"))&rsp-subtree-include=health&rsp-subtree-include=health
+
+
+https://10.122.143.24/api/class/fabricNode.json?query-target-filter=or(eq(fabricNode.role, "spine"),eq(fabricNode.role, "leaf"))&rsp-subtree-include=health
+
+
+https://10.122.143.24/api/class/fabricNode.json?query-target-filter=or(eq(fabricNode.role, "spine"),eq(fabricNode.role, "leaf"))
+
+
+https://10.122.143.24/api/class/fabricNode.json?query-target-filter=or(fabricNode.role, "spine", fabricNode.role, "leaf")&query-target=children&rsp-subtree-include=health
+
+
 https://10.122.143.24/api/class/fvTenant.json
+https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=health,required
+https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=health,required&rsp-subtree-filter=ge(healthInst.cur,"75")
