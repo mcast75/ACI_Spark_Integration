@@ -163,7 +163,7 @@ if __name__ == '__main__':
 		
 		
 		try:
-			choice = raw_input("Select 1 to perform GET request or 2 to perform POST request: ")	
+			choice = raw_input("Select 1 to perform GET request or 2 to perform POST request, 3=Get Tenants&Health, 4=Get Nodes and Health: ")	
 			if choice == '1':
 				url = read_file("get-url.txt")
 				#print "****COOKIE 3*****"
@@ -178,6 +178,24 @@ if __name__ == '__main__':
 				payload = read_file("post-json.txt")
 				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
 				post(ip_addr,'admin', auth_cookie, payload)
+
+			elif choice == '3':
+				url = "https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=health,required"
+				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
+				get(url,'admin', auth_cookie)
+				#sub_choice = raw_input("Create Subscription for this [y/n]? ")
+				#if sub_choice=='y' or sub_choice=='Y':sub(url, username, auth_cookie)
+				print "\n\n"
+
+			elif choice == '4':
+				pod = "pod-1"
+				url = "https://10.122.143.24/api/class/topology/"+pod+"/topSystem.json?rsp-subtree-include=health,required"
+				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
+				get(url,'admin', auth_cookie)
+				#sub_choice = raw_input("Create Subscription for this [y/n]? ")
+				#if sub_choice=='y' or sub_choice=='Y':sub(url, username, auth_cookie)
+				print "\n\n"
+
 		
 		except KeyboardInterrupt :
 			print '\n\n\n********************************'
