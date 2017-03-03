@@ -1,254 +1,33 @@
-Wed Mar  1 14:15:44 2017
+Fri Mar  3 14:32:36 2017
 {
   "imdata": [
     {
-      "topSystem": {
+      "fvTenant": {
         "attributes": {
-          "status": "", 
-          "remoteNetworkId": "0", 
-          "oobMgmtAddr": "14.2.110.12", 
-          "etepAddr": "0.0.0.0", 
-          "bootstrapState": "done", 
-          "serial": "SAL1920F3EM", 
-          "id": "201", 
-          "podId": "1", 
-          "oobMgmtAddr6": "::", 
-          "inbMgmtAddr": "0.0.0.0", 
-          "state": "in-service", 
-          "role": "spine", 
-          "monPolDn": "uni/fabric/monfab-default", 
-          "modTs": "2017-01-26T13:44:03.592-05:00", 
-          "systemUpTime": "99:01:56:09.000", 
-          "dn": "topology/pod-1/node-201/sys", 
-          "remoteNode": "no", 
-          "configIssues": "", 
-          "inbMgmtAddr6": "::", 
-          "fabricId": "1", 
-          "fabricMAC": "00:22:BD:F8:19:FF", 
-          "address": "10.0.8.94", 
-          "childAction": "", 
+          "dn": "uni/tn-CSAP_TENANT", 
           "lcOwn": "local", 
-          "name": "spine201", 
-          "currentTime": "2017-03-01T14:15:44.356-05:00", 
-          "mode": "unspecified", 
-          "fabricDomain": "RTP-Pod3"
+          "ownerKey": "", 
+          "name": "CSAP_TENANT", 
+          "descr": "", 
+          "status": "", 
+          "monPolDn": "uni/tn-common/monepg-default", 
+          "modTs": "2017-02-27T12:17:59.318-05:00", 
+          "ownerTag": "", 
+          "uid": "15374", 
+          "childAction": ""
         }, 
         "children": [
           {
             "healthInst": {
               "attributes": {
                 "status": "", 
-                "updTs": "2017-03-01T10:43:35.646-05:00", 
-                "chng": "3", 
-                "cur": "98", 
+                "updTs": "2017-03-03T14:28:31.434-05:00", 
+                "chng": "0", 
+                "cur": "100", 
                 "maxSev": "cleared", 
-                "twScore": "98", 
+                "twScore": "100", 
                 "rn": "health", 
-                "prev": "95", 
-                "childAction": ""
-              }
-            }
-          }
-        ]
-      }
-    }, 
-    {
-      "topSystem": {
-        "attributes": {
-          "status": "", 
-          "remoteNetworkId": "0", 
-          "oobMgmtAddr": "10.122.143.29", 
-          "etepAddr": "0.0.0.0", 
-          "bootstrapState": "none", 
-          "serial": "SAL1934MR4C", 
-          "id": "103", 
-          "podId": "1", 
-          "oobMgmtAddr6": "::", 
-          "inbMgmtAddr": "0.0.0.0", 
-          "state": "in-service", 
-          "role": "leaf", 
-          "monPolDn": "uni/fabric/monfab-default", 
-          "modTs": "2017-02-16T12:22:02.157-05:00", 
-          "systemUpTime": "13:01:55:02.000", 
-          "dn": "topology/pod-1/node-103/sys", 
-          "remoteNode": "no", 
-          "configIssues": "", 
-          "inbMgmtAddr6": "::", 
-          "fabricId": "1", 
-          "fabricMAC": "00:22:BD:F8:19:FF", 
-          "address": "10.0.8.91", 
-          "childAction": "", 
-          "lcOwn": "local", 
-          "name": "leaf103", 
-          "currentTime": "2017-03-01T14:15:44.265-05:00", 
-          "mode": "unspecified", 
-          "fabricDomain": "RTP-Pod3"
-        }, 
-        "children": [
-          {
-            "healthInst": {
-              "attributes": {
-                "status": "", 
-                "updTs": "2017-03-01T13:33:01.593-05:00", 
-                "chng": "12", 
-                "cur": "98", 
-                "maxSev": "cleared", 
-                "twScore": "98", 
-                "rn": "health", 
-                "prev": "87", 
-                "childAction": ""
-              }
-            }
-          }
-        ]
-      }
-    }, 
-    {
-      "topSystem": {
-        "attributes": {
-          "status": "", 
-          "remoteNetworkId": "0", 
-          "oobMgmtAddr": "10.122.143.28", 
-          "etepAddr": "0.0.0.0", 
-          "bootstrapState": "none", 
-          "serial": "SAL1935N8HU", 
-          "id": "102", 
-          "podId": "1", 
-          "oobMgmtAddr6": "::", 
-          "inbMgmtAddr": "0.0.0.0", 
-          "state": "in-service", 
-          "role": "leaf", 
-          "monPolDn": "uni/fabric/monfab-default", 
-          "modTs": "2017-02-13T16:00:42.282-05:00", 
-          "systemUpTime": "15:22:17:00.000", 
-          "dn": "topology/pod-1/node-102/sys", 
-          "remoteNode": "no", 
-          "configIssues": "", 
-          "inbMgmtAddr6": "::", 
-          "fabricId": "1", 
-          "fabricMAC": "00:22:BD:F8:19:FF", 
-          "address": "10.0.8.92", 
-          "childAction": "", 
-          "lcOwn": "local", 
-          "name": "leaf102", 
-          "currentTime": "2017-03-01T14:15:48.229-05:00", 
-          "mode": "unspecified", 
-          "fabricDomain": "RTP-Pod3"
-        }, 
-        "children": [
-          {
-            "healthInst": {
-              "attributes": {
-                "status": "", 
-                "updTs": "2017-03-01T13:33:05.565-05:00", 
-                "chng": "6", 
-                "cur": "65", 
-                "maxSev": "cleared", 
-                "twScore": "65", 
-                "rn": "health", 
-                "prev": "61", 
-                "childAction": ""
-              }
-            }
-          }
-        ]
-      }
-    }, 
-    {
-      "topSystem": {
-        "attributes": {
-          "status": "", 
-          "remoteNetworkId": "0", 
-          "oobMgmtAddr": "10.122.143.27", 
-          "etepAddr": "0.0.0.0", 
-          "bootstrapState": "none", 
-          "serial": "SAL1935N8C1", 
-          "id": "101", 
-          "podId": "1", 
-          "oobMgmtAddr6": "::", 
-          "inbMgmtAddr": "0.0.0.0", 
-          "state": "in-service", 
-          "role": "leaf", 
-          "monPolDn": "uni/fabric/monfab-default", 
-          "modTs": "2017-02-20T10:17:34.792-05:00", 
-          "systemUpTime": "09:03:59:05.000", 
-          "dn": "topology/pod-1/node-101/sys", 
-          "remoteNode": "no", 
-          "configIssues": "", 
-          "inbMgmtAddr6": "::", 
-          "fabricId": "1", 
-          "fabricMAC": "00:22:BD:F8:19:FF", 
-          "address": "10.0.8.95", 
-          "childAction": "", 
-          "lcOwn": "local", 
-          "name": "leaf101", 
-          "currentTime": "2017-03-01T14:15:45.241-05:00", 
-          "mode": "unspecified", 
-          "fabricDomain": "RTP-Pod3"
-        }, 
-        "children": [
-          {
-            "healthInst": {
-              "attributes": {
-                "status": "", 
-                "updTs": "2017-02-20T10:30:44.489-05:00", 
-                "chng": "8", 
-                "cur": "65", 
-                "maxSev": "cleared", 
-                "twScore": "65", 
-                "rn": "health", 
-                "prev": "60", 
-                "childAction": ""
-              }
-            }
-          }
-        ]
-      }
-    }, 
-    {
-      "topSystem": {
-        "attributes": {
-          "status": "", 
-          "remoteNetworkId": "0", 
-          "oobMgmtAddr": "14.2.110.13", 
-          "etepAddr": "0.0.0.0", 
-          "bootstrapState": "done", 
-          "serial": "SAL1933M536", 
-          "id": "202", 
-          "podId": "1", 
-          "oobMgmtAddr6": "::", 
-          "inbMgmtAddr": "0.0.0.0", 
-          "state": "in-service", 
-          "role": "spine", 
-          "monPolDn": "uni/fabric/monfab-default", 
-          "modTs": "2017-02-13T16:01:23.574-05:00", 
-          "systemUpTime": "15:22:18:01.000", 
-          "dn": "topology/pod-1/node-202/sys", 
-          "remoteNode": "no", 
-          "configIssues": "", 
-          "inbMgmtAddr6": "::", 
-          "fabricId": "1", 
-          "fabricMAC": "00:22:BD:F8:19:FF", 
-          "address": "10.0.8.93", 
-          "childAction": "", 
-          "lcOwn": "local", 
-          "name": "spine202", 
-          "currentTime": "2017-03-01T14:15:44.938-05:00", 
-          "mode": "unspecified", 
-          "fabricDomain": "RTP-Pod3"
-        }, 
-        "children": [
-          {
-            "healthInst": {
-              "attributes": {
-                "status": "", 
-                "updTs": "2017-03-01T10:43:31.982-05:00", 
-                "chng": "3", 
-                "cur": "98", 
-                "maxSev": "cleared", 
-                "twScore": "98", 
-                "rn": "health", 
-                "prev": "95", 
+                "prev": "100", 
                 "childAction": ""
               }
             }
@@ -257,6 +36,6 @@ Wed Mar  1 14:15:44 2017
       }
     }
   ], 
-  "totalCount": "5"
+  "totalCount": "1"
 }
 

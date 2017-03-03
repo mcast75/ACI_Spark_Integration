@@ -11,7 +11,12 @@ is_IP = False
 time_auth = 0
 AUTH_TIMEOUT = 90
 auth_cookie = {}
+subDict={}
+tenantHealth={}
+flag = "off"
+#subMap = {"fvtenant": tenant}
 
+#dont touch this
 def cookie_good(time_auth, timeout):
 	#print "time now: "+str(time.time())+" | time authorized: "+str(time_auth)
 
@@ -20,7 +25,7 @@ def cookie_good(time_auth, timeout):
 		#print "***BAD COOKIE***"
 		return False
 	else: return True 
-
+#dont touch this- acquires cookie
 def get_cookie(ip, user, password):
 
 	#print "******COOKIE GENERATED******"
@@ -56,7 +61,22 @@ def get_cookie(ip, user, password):
 		print
 		sys.exit(1)
 	return login_time, auth_cookie
-
+#this works- get request
+def get(url, user, cookie):
+	try:
+		response = requests.request("GET", url, cookies=cookie, verify=False)
+		#f = open('Get_Output.txt','a') - save fort later
+		f = open('Get_Output.txt','w') #clean everything up each time
+		f.write(time.ctime(time.time())+'\n'+json.dumps(json.loads(response.text), indent=2)+'\n\n')
+		f.close()
+		return response
+	except:
+		response = requests.request("GET", url, cookies=cookie, verify=False)
+		print "ERROR - "+str(response.status_code)
+		print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])	
+		sys.exit(1)
+		print
+#this works- post request
 def post(ip, user, cookie, payload):
 	url = "http://"+ip+"/api/node/mo/.json"
 
@@ -69,64 +89,94 @@ def post(ip, user, cookie, payload):
 		f.write(time.ctime(time.time())+'\n'+json.dumps(json.loads(response.text), indent=2)+'\n\n')
 		f.close()
 	except:
-		response = requests.request("POST", url, data=json.dumps(json.loads(payload)), cookies=cookie)
-		print "ERROR - "+str(response.status_code)
-		print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
-		print
-		sys.exit(1)
-
-def get(url, user, cookie):
-	#try:
-	response = requests.request("GET", url, cookies=cookie, verify=False)
-	print '\tStatus Code: '+ str(response.status_code)
-	print '\tSuccess\n'
-	#f = open('Get_Output.txt','a') - save fort later
-
-	f = open('Get_Output.txt','w') #clean everything up each time
-	f.write(time.ctime(time.time())+'\n'+json.dumps(json.loads(response.text), indent=2)+'\n\n')
-	f.close()
-	# except:
-	# 	response = requests.request("GET", url, cookies=cookie, verify=False)
-	# 	print "ERROR - "+str(response.status_code)
-	# 	print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
-	# 	sys.exit(1)
-	# 	print
-
-def sub(url, user, cookie):
-	try:
-		url = url+'?subscription=yes'
-		response = requests.request("GET", url, cookies=cookie, verify=False)
-		#print json.dumps(json.loads(response.text), indent=2)
-		print 
-		print("\nSubscribed\n")
-	except: 
-		print 'prblem'
-
-def listen(websocket, blank_string):
-	while(1):
-		result = websocket.recv()
-		print 'hit'
-		blank_string += blank_string+time.ctime(time.time())+'\n'+json.dumps(json.loads(result), indent=2)+'\n\n'
-		f = open('Sub_Output.txt','w')
-		f.write(blank_string)
-		f.close()
-
+	 	response = requests.request("POST", url, data=json.dumps(json.loads(payload)), cookies=cookie)
+	 	print "ERROR - "+str(response.status_code)
+	 	print str(json.loads(response.text)['imdata'][0]['error']['attributes']['text'])
+	 	print
+	 	sys.exit(1)
+#this works- read input from file
 def read_file(filepath):
 
 	json_string=''
 	try:
 		#open the file to be read iteratively and sent to remote device
 		file = open(filepath, 'r')
-		json_string=file.readline().replace("\n", "")
-		print json_string
-		#for line in file.readlines():
-		#	json_string+=str(line)
+		#json_string=file.readline().replace("\n", "")
+		#print json_string
+		for line in file.readlines():
+			json_string+=str(line)
 		file.close
 		return json_string
 		#To avoid configuration file related errors, close the file.
 	except IOErorr:
 		print '\n+++ Problem Opening '+config_file+'- No Such File or Directory +++\n'
 		sys.exit(1)
+
+#use this to toggle the fault event
+def sabatoge(user, cookie):
+	global flag
+	if flag=="on":
+		url = "https://10.122.143.24/api/node/mo/uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1/rspathAtt-[topology/pod-1/paths-103/pathep-[eth1/45]].json"
+		payload = '{"fvRsPathAtt":{"attributes":{"dn":"uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1/rspathAtt-[topology/pod-1/paths-103/pathep-[eth1/45]]","status":"deleted"},"children":[]}}'
+		flag = "off"
+	
+	elif flag == "off":		
+		url= "https://10.122.143.24/api/node/mo/uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1.json"
+		payload='{"fvRsPathAtt":{"attributes":{"encap":"vlan-1000","tDn":"topology/pod-1/paths-103/pathep-[eth1/45]","status":"created"},"children":[]}}'
+		flag="on"
+
+	response = requests.request("POST", url, data=payload, cookies=cookie, verify=False)
+	f = open('Get_Output.txt','w') #clean everything up each time
+	f.write(time.ctime(time.time())+'\n'+json.dumps(json.loads(response.text), indent=2)+'\n\n')
+	f.close()
+
+
+#creat dictionary of current health scores and subscribe to fault updates
+def getTenantHealth(user, cookie):
+	url = "https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=health"
+	response = get(url, user, cookie)
+	
+	for x in range (0,int(json.loads(response.text)["totalCount"])):
+		key = str((json.loads(response.text))["imdata"][x]["fvTenant"]["attributes"]["name"])
+		val = int((json.loads(response.text))["imdata"][x]["fvTenant"]["children"][0]["healthInst"]["attributes"]["cur"])
+		tenantHealth[key]=val
+	print tenantHealth
+
+	url = "https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=faults,no-scoped,subtree&subscription=yes"
+	response = get(url, user, cookie)
+	key = str((json.loads(response.text))["subscriptionId"])
+	subDict[key] = "fault"
+	url = "https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=faults,no-scoped,subtree&subscription=yes"
+
+
+#this works --listens on the open websocket for subscribed events
+def listen(websocket, user, cookie):
+	blank_string=''
+	while(1):
+		result = websocket.recv()
+		print "hit"
+		blank_string += blank_string+time.ctime(time.time())+'\n'+json.dumps(json.loads(result), indent=2)+'\n\n'
+		f = open('Sub_Output.txt','w')
+		f.write(blank_string)
+		f.close()
+
+
+		key = str((json.loads(result))["subscriptionId"])[3:-2]
+		#checks the event that the subscription ID we received is mapped tp
+		#if we have a fault event, this will extract which tenant the fault was triggered by and then update the user of the change in health score
+		if subDict[key] == 'fault':
+			time.sleep(20) # we need to look into how to handle the delay-- the apic itself takes a while to update-- im fine leaving a buffer time for now
+			print "\n\n\n\n++++++++++++++++Event Generated+++++++++++++++++\n"
+			print "Event: "+subDict[str(json.loads(result)["subscriptionId"])[3:-2]]
+			temp = str(json.loads(result)["imdata"][0]["faultDelegate"]["attributes"]["dn"]).split('/')
+			print "dn --> "+temp[0]+'/'+temp[1]
+			url = "https://10.122.143.24/api/mo/"+temp[0]+'/'+temp[1]+".json?rsp-subtree-include=health"
+			response = get(url, user, cookie)
+			print "Tenant Score Change: "+str(json.loads(response.text)["imdata"][0]['fvTenant']['children'][0]['healthInst']['attributes']['chng'])
+			print "New Tenant Health Score: "+str(json.loads(response.text)["imdata"][0]['fvTenant']['children'][0]['healthInst']['attributes']['cur'])
+			print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n\n"
+
+
 
 if __name__ == '__main__':
 	print '\n\n\n======================================'
@@ -143,7 +193,6 @@ if __name__ == '__main__':
 	password = "ins3965!"
 
 	print "IP Address: "+ip_addr+"\nUsername: "+username+"\nPassword: "+password+"\n\n"
-	#print "****COOKIE 1*****"
 	time_auth, auth_cookie = get_cookie(ip_addr,username, password)	
 
 	ws = websocket.WebSocket()#sslopt={"cert_reqs": ssl.CERT_NONE})
@@ -152,50 +201,29 @@ if __name__ == '__main__':
 		#print ip_addr
 		#print auth_cookie["APIC-cookie"]
 		#print "ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']
-	thread.start_new_thread(listen, (ws, ''))
+	thread.start_new_thread(listen, (ws, 'admin', auth_cookie))
 		
 	while(1):
 		#if the auth-cookie has expired we need to ask for a new one
-		#print "****COOKIE 2*****"
-
 		if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
 		host = "http://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']
 		
-		
 		try:
-			choice = raw_input("Select 1 to perform GET request or 2 to perform POST request, 3=Get Tenants&Health, 4=Get Nodes and Health: ")	
-			if choice == '1':
-				url = read_file("get-url.txt")
-				#print "****COOKIE 3*****"
-
+			choice = raw_input("Select 0: Toggle EPG Static Port, 1: Tenant Health, 2: Node Health, 99: POST from file: ")	
+			if choice == '0':
 				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
-				get(url,'admin', auth_cookie)
-				sub_choice = raw_input("Create Subscription for this [y/n]? ")
-				if sub_choice=='y' or sub_choice=='Y':sub(url, username, auth_cookie)
+				sabatoge('admin', auth_cookie)
 				print "\n\n"
 			
-			elif choice == '2':
+			elif choice == '1':
+				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
+				getTenantHealth('admin', auth_cookie)
+				print "\n\n"
+			
+			elif choice == '99':
 				payload = read_file("post-json.txt")
 				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
 				post(ip_addr,'admin', auth_cookie, payload)
-
-			elif choice == '3':
-				url = "https://10.122.143.24/api/class/fvTenant.json?rsp-subtree-include=health,required"
-				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
-				get(url,'admin', auth_cookie)
-				#sub_choice = raw_input("Create Subscription for this [y/n]? ")
-				#if sub_choice=='y' or sub_choice=='Y':sub(url, username, auth_cookie)
-				print "\n\n"
-
-			elif choice == '4':
-				pod = "pod-1"
-				url = "https://10.122.143.24/api/class/topology/"+pod+"/topSystem.json?rsp-subtree-include=health,required"
-				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
-				get(url,'admin', auth_cookie)
-				#sub_choice = raw_input("Create Subscription for this [y/n]? ")
-				#if sub_choice=='y' or sub_choice=='Y':sub(url, username, auth_cookie)
-				print "\n\n"
-
 		
 		except KeyboardInterrupt :
 			print '\n\n\n********************************'

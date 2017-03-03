@@ -1,67 +1,37 @@
-Tue Feb 28 12:05:56 2017
+Fri Mar  3 14:32:16 2017
 {
   "imdata": [
     {
-      "fvTenant": {
+      "faultDelegate": {
         "attributes": {
-          "dn": "uni/tn-CSAP_TENANT1", 
           "status": "deleted", 
+          "domain": "tenant", 
+          "code": "F0467", 
+          "occur": "1", 
+          "subject": "management", 
+          "severity": "minor", 
+          "descr": "Configuration failed for uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1 due to VRF Not Present", 
+          "origSeverity": "minor", 
           "rn": "", 
-          "modTs": "2017-02-28T12:02:17.942-05:00", 
-          "childAction": ""
+          "childAction": "", 
+          "type": "config", 
+          "dn": "uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1/fd-[topology/pod-1/node-103/local/svc-policyelem-id-0/uni/epp/fv-[uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1]/nwissues]-fault-F0467", 
+          "prevSeverity": "minor", 
+          "affected": "topology/pod-1/node-103/local/svc-policyelem-id-0/uni/epp/fv-[uni/tn-CSAP_TENANT/ap-App_Prof/epg-EPG-1]/nwissues", 
+          "highestSeverity": "minor", 
+          "lc": "", 
+          "changeSet": "configQual (New: context-not-present), configSt (New: failed-to-apply), tempConfigQual (New: )", 
+          "created": "2017-03-03T14:23:42.223-05:00", 
+          "ack": "no", 
+          "cause": "configuration-failed", 
+          "rule": "fv-nw-issues-config-failed", 
+          "lastTransition": "2017-03-03T14:32:15.299-05:00"
         }
       }
     }
   ], 
   "subscriptionId": [
-    "72058126630912001"
-  ]
-}
-
-Tue Feb 28 12:05:56 2017
-{
-  "imdata": [
-    {
-      "fvTenant": {
-        "attributes": {
-          "dn": "uni/tn-CSAP_TENANT1", 
-          "status": "deleted", 
-          "rn": "", 
-          "modTs": "2017-02-28T12:02:17.942-05:00", 
-          "childAction": ""
-        }
-      }
-    }
-  ], 
-  "subscriptionId": [
-    "72058126630912001"
-  ]
-}
-
-Tue Feb 28 12:06:03 2017
-{
-  "imdata": [
-    {
-      "fvTenant": {
-        "attributes": {
-          "dn": "uni/tn-CSAP_TENANT1", 
-          "lcOwn": "local", 
-          "ownerKey": "", 
-          "name": "CSAP_TENANT1", 
-          "descr": "", 
-          "status": "created", 
-          "monPolDn": "uni/tn-common/monepg-default", 
-          "modTs": "2017-02-28T12:02:25.052-05:00", 
-          "ownerTag": "", 
-          "uid": "15374", 
-          "rn": "", 
-          "childAction": ""
-        }
-      }
-    }
-  ], 
-  "subscriptionId": [
-    "72058126630912001"
+    "72058753696202753"
   ]
 }
 
