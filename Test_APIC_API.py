@@ -3,7 +3,7 @@ __author__ = "Michael Castellana"
 __email__ = "micastel@cisco.com"
 __status__ = "Development"
 
-#import the necessary libraries to make NXAPI REST calls
+#import the necessary libraries to make APIC REST calls
 import requests, json, sys, socket, getpass, time, websocket, thread, ssl, tornado
 
 
@@ -25,6 +25,11 @@ def cookie_good(time_auth, timeout):
 		#print "***BAD COOKIE***"
 		return False
 	else: return True 
+#refresh if token times out and resets timer
+def refresh_cookie(ip, user, cookie):
+	url = "http://"+ip+"/api/aaaRefresh.json"
+	get(url, user, cookie)
+	return time.time()
 #dont touch this- acquires cookie
 def get_cookie(ip, user, password):
 
@@ -195,34 +200,43 @@ if __name__ == '__main__':
 	print "IP Address: "+ip_addr+"\nUsername: "+username+"\nPassword: "+password+"\n\n"
 	time_auth, auth_cookie = get_cookie(ip_addr,username, password)	
 
+	#opening the websocket with the API token
 	ws = websocket.WebSocket()#sslopt={"cert_reqs": ssl.CERT_NONE})
-
 	ws.connect("ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie'])
-		#print ip_addr
-		#print auth_cookie["APIC-cookie"]
-		#print "ws://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']
 	thread.start_new_thread(listen, (ws, 'admin', auth_cookie))
-		
+	
+
 	while(1):
 		#if the auth-cookie has expired we need to ask for a new one
-		if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
-		host = "http://"+ip_addr+"/socket"+auth_cookie['APIC-cookie']
-		
+		if cookie_good(time_auth, AUTH_TIMEOUT) == False: 
+			time_auth = refresh_cookie(ip_addr, "admin", auth_cookie)
+
+		#input menu for development testing		
 		try:
 			choice = raw_input("Select 0: Toggle EPG Static Port, 1: Tenant Health, 2: Node Health, 99: POST from file: ")	
+			
+			#toggle sabatoge to influence health
 			if choice == '0':
-				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
+				if cookie_good(time_auth, AUTH_TIMEOUT) == False: 
+					time_auth = refresh_cookie(ip_addr, "admin", auth_cookie)
 				sabatoge('admin', auth_cookie)
 				print "\n\n"
 			
+			#get and subscribe to tenant health
 			elif choice == '1':
-				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
-				getTenantHealth('admin', auth_cookie)
+				if cookie_good(time_auth, AUTH_TIMEOUT) == False: 
+					time_auth = refresh_cookie(ip_addr, "admin", auth_cookie)				getTenantHealth('admin', auth_cookie)
 				print "\n\n"
 			
+			#get node health **Not implemented yet
+			elif choice == '2':
+				print "NOT IMPLEMENTED YET"
+
+			#enter post command
 			elif choice == '99':
 				payload = read_file("post-json.txt")
-				if cookie_good(time_auth, AUTH_TIMEOUT) == False: time_auth, auth_cookie = get_cookie(ip_addr,username, password)
+				if cookie_good(time_auth, AUTH_TIMEOUT) == False: 
+					time_auth = refresh_cookie(ip_addr, "admin", auth_cookie), password)
 				post(ip_addr,'admin', auth_cookie, payload)
 		
 		except KeyboardInterrupt :
@@ -230,7 +244,6 @@ if __name__ == '__main__':
 			print '***\t\t\t     ***\n***      Session Closed      ***'
 			print '***\t\t\t     ***'
 			print '********************************\n\n'
-
 			sys.exit(0)
 		
 
